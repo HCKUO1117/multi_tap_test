@@ -1,6 +1,6 @@
 # multi_tap_test
 
-A new Flutter project.
+3.10.6
 
 ## Getting Started
 

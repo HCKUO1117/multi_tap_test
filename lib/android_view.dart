@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -40,19 +42,32 @@ class _AndroidTouchViewState extends State<AndroidTouchView> {
 
   @override
   Widget build(BuildContext context) {
-    if (verified) {
-      return Center(
-        child: ElevatedButton(
-          onPressed: () {
-            setState(() {
-              verified = false;
-            });
-          },
-          child: const Text('重新驗證'),
-        ),
-      );
-    }
-    return const AndroidView(viewType: viewType);
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        const Icon(Icons.ac_unit),
+        Builder(builder: (c){
+          if (verified) {
+            return Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    verified = false;
+                  });
+                },
+                child: const Text('重新驗證'),
+              ),
+            );
+          }
+          if (Platform.isAndroid) {
+            return const AndroidView(viewType: viewType);
+          } else {
+            return const UiKitView(viewType: viewType);
+          }
+        })
+      ],
+    );
+
   }
 
   void verify(dynamic arguments) {
@@ -61,17 +76,30 @@ class _AndroidTouchViewState extends State<AndroidTouchView> {
     OffsetModel size = OffsetModel(x: 0, y: 0);
 
     ///資料轉換
-    try {
-      Map<Object?, Object?> raw = arguments;
-      size = OffsetModel.fromMap(arguments['size']);
-      raw.forEach((key, value) {
-        if (key != 'size') {
-          offsetList.add(OffsetModel.fromMap(value));
+    if (Platform.isAndroid) {
+      try {
+        Map<Object?, Object?> raw = arguments;
+        size = OffsetModel.fromMap(arguments['size']);
+        raw.forEach((key, value) {
+          if (key != 'size') {
+            offsetList.add(OffsetModel.fromMap(value));
+          }
+        });
+      } catch (e) {
+        print(e);
+        return;
+      }
+    } else {
+      try {
+        List<dynamic> raw = arguments['points'];
+        size = OffsetModel.fromMap(arguments['size']);
+        for (var element in raw) {
+          offsetList.add(OffsetModel.fromMap(element));
         }
-      });
-    } catch (e) {
-      print(e);
-      return;
+      } catch (e) {
+        print(e);
+        return;
+      }
     }
 
     if (offsetList.length != totalPoints) return;
@@ -97,7 +125,8 @@ class _AndroidTouchViewState extends State<AndroidTouchView> {
         verified = true;
       });
       ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('驗證成功')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('驗證成功')));
     }
   }
 
@@ -119,7 +148,8 @@ class _AndroidTouchViewState extends State<AndroidTouchView> {
         distribution.add(1);
         process++;
         for (int j = i + 1; j < totalPoints; j++) {
-          if (checkSameGroup(main: value[i], compare: value[j], deviation: deviation)) {
+          if (checkSameGroup(
+              main: value[i], compare: value[j], deviation: deviation)) {
             distribution.last++;
             process = j + 1;
           }
@@ -150,6 +180,8 @@ class OffsetModel {
   });
 
   factory OffsetModel.fromMap(dynamic map) {
-    return OffsetModel(x: double.parse(map['x'].toString()), y: double.parse(map['y'].toString()));
+    return OffsetModel(
+        x: double.parse(map['x'].toString()),
+        y: double.parse(map['y'].toString()));
   }
 }
