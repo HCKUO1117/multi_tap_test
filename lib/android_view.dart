@@ -7,16 +7,16 @@ import 'package:flutter/services.dart';
 const String viewType = 'multi_touch';
 
 ///從Y軸每行有幾個點位
-const List<int> yFormat = [2, 1];
+const List<int> yFormat = [2];
 
 ///從X軸每列有幾個點位
-const List<int> xFormat = [2, 1];
+const List<int> xFormat = [1, 1];
 
 ///精確度
 const double accuracy = 0.01;
 
 ///有幾個點
-const int totalPoints = 3;
+const int totalPoints = 2;
 
 class AndroidTouchView extends StatefulWidget {
   const AndroidTouchView({Key? key}) : super(key: key);
