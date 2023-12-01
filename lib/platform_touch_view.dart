@@ -16,6 +16,12 @@ const List<int> xFormat = [1, 1];
 ///精確度
 const double accuracy = 0.01;
 
+///誤差
+const double difference = 0.01;
+
+///每隔寬度(cm)
+const double columnSize = 0.5;
+
 ///有幾個點
 const int totalPoints = 2;
 
@@ -128,14 +134,16 @@ class _PlatformTouchViewState extends State<PlatformTouchView> {
     bool yCheck = checkDataFit(
       sample: yFormat,
       value: offsetList.map((e) => e.y).toList(),
-      maxSize: size.y,
+      maxX: size.x,
+      maxY: size.y,
       accuracy: accuracy,
     );
     //從x軸驗證
     bool xCheck = checkDataFit(
       sample: xFormat,
       value: offsetList.map((e) => e.x).toList(),
-      maxSize: size.x,
+      maxX: size.x,
+      maxY: size.y,
       accuracy: accuracy,
     );
     print('x: $xCheck,y:$yCheck');
@@ -153,15 +161,21 @@ class _PlatformTouchViewState extends State<PlatformTouchView> {
   bool checkDataFit({
     required List<int> sample,
     required List<double> value,
-    required double maxSize,
+    required double maxX,
+    required double maxY,
     required double accuracy,
   }) {
     List<int> distribution = [];
     int process = 0;
     value.sort((a, b) => a.compareTo(b));
 
-    ///誤差
-    double deviation = maxSize * accuracy;
+    ///誤差值
+    double deviation = maxX * accuracy;
+
+    ///若要納入實際寬度
+    // if (realWidth != 0) {
+    //   deviation = columnSize * maxX / realWidth;
+    // }
 
     for (int i = 0; i < totalPoints; i++) {
       if (i == process) {
