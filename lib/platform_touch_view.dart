@@ -18,14 +18,14 @@ const double accuracy = 0.01;
 ///有幾個點
 const int totalPoints = 2;
 
-class AndroidTouchView extends StatefulWidget {
-  const AndroidTouchView({Key? key}) : super(key: key);
+class PlatformTouchView extends StatefulWidget {
+  const PlatformTouchView({Key? key}) : super(key: key);
 
   @override
-  State<AndroidTouchView> createState() => _AndroidTouchViewState();
+  State<PlatformTouchView> createState() => _PlatformTouchViewState();
 }
 
-class _AndroidTouchViewState extends State<AndroidTouchView> {
+class _PlatformTouchViewState extends State<PlatformTouchView> {
   static const platform = MethodChannel(viewType);
 
   bool verified = false;
@@ -46,7 +46,7 @@ class _AndroidTouchViewState extends State<AndroidTouchView> {
       alignment: Alignment.center,
       children: [
         const Icon(Icons.ac_unit),
-        Builder(builder: (c){
+        Builder(builder: (c) {
           if (verified) {
             return Center(
               child: ElevatedButton(
@@ -67,7 +67,6 @@ class _AndroidTouchViewState extends State<AndroidTouchView> {
         })
       ],
     );
-
   }
 
   void verify(dynamic arguments) {
