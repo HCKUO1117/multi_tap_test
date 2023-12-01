@@ -45,7 +45,7 @@ class _PlatformTouchViewState extends State<PlatformTouchView> {
     return Stack(
       alignment: Alignment.center,
       children: [
-        const Icon(Icons.ac_unit),
+        // const Icon(Icons.ac_unit),
         Builder(builder: (c) {
           if (verified) {
             return Center(
