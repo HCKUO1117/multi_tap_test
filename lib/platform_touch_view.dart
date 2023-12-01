@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sized_context/sized_context.dart';
 
 const String viewType = 'multi_touch';
 
@@ -30,6 +31,9 @@ class _PlatformTouchViewState extends State<PlatformTouchView> {
 
   bool verified = false;
 
+  double realHeight = 0;
+  double realWidth = 0;
+
   @override
   void initState() {
     platform.setMethodCallHandler((call) async {
@@ -40,12 +44,29 @@ class _PlatformTouchViewState extends State<PlatformTouchView> {
     super.initState();
   }
 
+  void getScreenRealSize(BuildContext context) {
+    // var mediaQuery = MediaQuery.of(context);
+    // var devicePixelRatio = mediaQuery.devicePixelRatio;
+    //
+    // realHeight = mediaQuery.size.height * devicePixelRatio;
+    // realWidth = mediaQuery.size.width * devicePixelRatio;
+
+    Size sizeInches = context.sizeInches;
+
+    realHeight = sizeInches.height * 2.54;
+    realWidth = sizeInches.width * 2.54;
+
+    print(realWidth);
+    print(realHeight);
+  }
+
   @override
   Widget build(BuildContext context) {
+    getScreenRealSize(context);
     return Stack(
       alignment: Alignment.center,
       children: [
-        // const Icon(Icons.ac_unit),
+        Text('寬：$realWidth cm \n 高：$realHeight cm'),
         Builder(builder: (c) {
           if (verified) {
             return Center(
